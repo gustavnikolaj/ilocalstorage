@@ -1,12 +1,20 @@
 describe('iLocalStorage', function () {
     describe('Constructor', function () {
+        var fakeObj;
+        beforeEach(function () {
+            fakeObj = {
+                hasLocalStorage: sinon.stub().returns(true)
+            };
+        });
         it('should be a function', function () {
             expect(iLocalStorage, 'to be a function');
         });
-        it('should take a argument to allow mocking browser localstorage', function () {
-            var fakeObj = {};
-            var localStorage = new iLocalStorage(fakeObj);
-            expect(localStorage.storage, 'to be', fakeObj);
+        it('should take an option to allow mocking browser localstorage', function () {
+            var options = {
+                storage: { foo: 'some localStorage mock' }
+            };
+            iLocalStorage.call(fakeObj, options);
+            expect(fakeObj.storage, 'to be', options.storage);
         });
         it('should take save a reference to window.localStorage if no mock is given', function () {
             // This test might fail if no localStorage is present in the browser
@@ -15,8 +23,8 @@ describe('iLocalStorage', function () {
             //
             // The assumption is that it will be undefined in browsers that don't
             // support it, and thus the test will still pass.
-            var localStorage = new iLocalStorage();
-            expect(localStorage.storage, 'to equal', window.localStorage);
+            iLocalStorage.call(fakeObj);
+            expect(fakeObj.storage, 'to equal', window.localStorage);
         });
     });
     describe('Test for localStorage availability.', function () {
