@@ -203,7 +203,25 @@ describe('iLocalStorage', function () {
             });
         });
         describe('clear', function () {
-            it.skip('should remove all keys in the namespace', function () {});
+            it('should remove all keys in the defined namespace', function () {
+                fakeObj.removeItem = sinon.spy();
+                fakeObj.keys = function () { return Object.keys(this.storage); };
+                fakeObj.storage = {
+                    'test.foo': 'foo',
+                    'bar': 'foo'
+                };
+                iLocalStorage.prototype.clear.call(fakeObj);
+                expect(fakeObj.removeItem, 'was called once');
+                expect(fakeObj.removeItem, 'was called with', 'test.foo');
+            });
+            it('should remove all keys when not given a namespace', function () {
+                fakeObj.storage = {
+                    clear: sinon.spy()
+                };
+                fakeObj.namespace = '';
+                iLocalStorage.prototype.clear.call(fakeObj);
+                expect(fakeObj.storage.clear, 'was called');
+            });
         });
     });
 });
