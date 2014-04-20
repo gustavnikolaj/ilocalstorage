@@ -26,6 +26,14 @@ describe('iLocalStorage', function () {
             iLocalStorage.call(fakeObj);
             expect(fakeObj.storage, 'to equal', window.localStorage);
         });
+        it('should take an option to set namespace', function () {
+            var options = {
+                namespace: 'foo'
+            };
+            iLocalStorage.call(fakeObj, options);
+            expect(fakeObj.namespace, 'to be', 'foo');
+            expect(fakeObj.storage, 'to be', window.localStorage);
+        });
     });
     describe('Test for localStorage availability.', function () {
         it('should be able to check if localstorage is functional', function () {
@@ -127,6 +135,59 @@ describe('iLocalStorage', function () {
                 iLocalStorage.prototype.remove.call(fakeObj, 'foo');
                 expect(fakeObj.removeItem, 'was called with', 'foo');
             });
+        });
+    });
+    describe('Namespacing', function () {
+        var fakeObj;
+        beforeEach(function () {
+            fakeObj = {
+                namespace: 'test',
+                namespacedKey: function (key) { return this.namespace + '.' + key; },
+                storage: {}
+            };
+        });
+        it('should return a namespaced key', function () {
+            expect(iLocalStorage.prototype.namespacedKey.call(fakeObj, 'key'), 'to be', 'test.key');
+        });
+        it('should return the key when no namespace is set', function () {
+            expect(iLocalStorage.prototype.namespacedKey.call(null, 'key'), 'to be', 'key');
+        });
+        describe('setItem', function () {
+            it('should attempt to set the value of a namespaced key', function () {
+                fakeObj.storage.setItem = sinon.spy();
+                iLocalStorage.prototype.setItem.call(fakeObj, 'foo', 'bar');
+                expect(fakeObj.storage.setItem, 'was called with', 'test.foo', 'bar');
+            });
+        });
+        describe('getItem', function () {
+            it('should attempt to get the value of a namespaced key', function () {
+                fakeObj.storage.getItem = sinon.spy();
+                iLocalStorage.prototype.getItem.call(fakeObj, 'foo');
+                expect(fakeObj.storage.getItem, 'was called with', 'test.foo');
+            });
+        });
+        describe('removeItem', function () {
+            it('should attempt to remove a namespaced key', function () {
+                fakeObj.storage.removeItem = sinon.spy();
+                iLocalStorage.prototype.removeItem.call(fakeObj, 'foo');
+                expect(fakeObj.storage.removeItem, 'was called with', 'test.foo');
+            });
+        });
+        describe('extended features', function () {
+            it('need not handle namespacing as they call into the default methods', function () {
+                fakeObj.setItem = sinon.spy();
+                fakeObj.getItem = sinon.spy(function () { return JSON.stringify('test'); });
+                fakeObj.removeItem = sinon.spy();
+                iLocalStorage.prototype.set.call(fakeObj, 'foo', 'bar');
+                expect(fakeObj.setItem, 'was called with', 'foo');
+                iLocalStorage.prototype.get.call(fakeObj, 'foo');
+                expect(fakeObj.getItem, 'was called with', 'foo');
+                iLocalStorage.prototype.remove.call(fakeObj, 'foo');
+                expect(fakeObj.removeItem, 'was called with', 'foo');
+            });
+        });
+        describe('clear', function () {
+            it.skip('should remove all keys in the namespace', function () {});
         });
     });
 });
