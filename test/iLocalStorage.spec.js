@@ -136,6 +136,22 @@ describe('iLocalStorage', function () {
                 expect(fakeObj.removeItem, 'was called with', 'foo');
             });
         });
+        describe('keys', function () {
+            it('should return all the keys in the storage object', function () {
+                fakeObj.storage = {
+                    foo: 'bar',
+                    baz: 'qux'
+                };
+                expect(iLocalStorage.prototype.keys.call(fakeObj), 'to equal', [
+                    'foo',
+                    'baz'
+                ]);
+            });
+            it('should return an empty list when nothing is saved', function () {
+                fakeObj.storage = {};
+                expect(iLocalStorage.prototype.keys.call(fakeObj), 'to equal', []);
+            });
+        });
     });
     describe('Namespacing', function () {
         var fakeObj;
