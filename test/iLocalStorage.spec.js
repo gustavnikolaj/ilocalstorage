@@ -54,7 +54,10 @@ describe('iLocalStorage', function () {
     describe('Basic localStorage functionality', function () {
         var fakeObj;
         beforeEach(function () {
-            fakeObj = { storage: {} };
+            fakeObj = {
+                maybeSwallowException: sinon.stub().returnsArg(0),
+                storage: {}
+            };
         });
         // Implement the basic localStorage functions as per the spec
         // by mapping functions to the browsers implementation:
@@ -158,6 +161,7 @@ describe('iLocalStorage', function () {
         beforeEach(function () {
             fakeObj = {
                 namespace: 'test',
+                maybeSwallowException: sinon.stub().returnsArg(0),
                 namespacedKey: function (key) { return this.namespace + '.' + key; },
                 storage: {}
             };
@@ -222,6 +226,41 @@ describe('iLocalStorage', function () {
                 iLocalStorage.prototype.clear.call(fakeObj);
                 expect(fakeObj.storage.clear, 'was called');
             });
+        });
+    });
+    describe('Ignoring exceptions', function () {
+        it('should swallow exceptions if asked to', function () {
+            expect(iLocalStorage.prototype.maybeSwallowException.call({
+                ignoreExceptions: true
+            }, function () {
+                throw new Error('Test error');
+            }), 'not to throw');
+        });
+        it('should not swallow exceptions if asked not to', function () {
+            expect(iLocalStorage.prototype.maybeSwallowException.call({
+                ignoreExceptions: false
+            }, function () {
+                throw new Error('Test error');
+            }), 'to throw', 'Test error');
+        });
+        it('should not swallow exceptions if not asked to', function () {
+            expect(iLocalStorage.prototype.maybeSwallowException.call({}, function () {
+                throw new Error('Test error');
+            }), 'to throw', 'Test error');
+        });
+        it('should allow to pass a fallback return value', function () {
+            expect(iLocalStorage.prototype.maybeSwallowException.call({
+                ignoreExceptions: true
+            }, function () {
+                throw new Error('Test error');
+            }, 'return value').call(), 'to be', 'return value');
+        });
+        it('should return undefined if no fallback return value is provided', function () {
+            expect(iLocalStorage.prototype.maybeSwallowException.call({
+                ignoreExceptions: true
+            }, function () {
+                throw new Error('Test error');
+            }).call(), 'to be undefined');
         });
     });
 });
