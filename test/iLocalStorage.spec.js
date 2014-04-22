@@ -170,7 +170,7 @@ describe('iLocalStorage', function () {
             expect(iLocalStorage.prototype.namespacedKey.call(fakeObj, 'key'), 'to be', 'test.key');
         });
         it('should return the key when no namespace is set', function () {
-            expect(iLocalStorage.prototype.namespacedKey.call(null, 'key'), 'to be', 'key');
+            expect(iLocalStorage.prototype.namespacedKey.call({}, 'key'), 'to be', 'key');
         });
         describe('setItem', function () {
             it('should attempt to set the value of a namespaced key', function () {
