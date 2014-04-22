@@ -262,5 +262,17 @@ describe('iLocalStorage', function () {
                 throw new Error('Test error');
             }).call(), 'to be undefined');
         });
+        it('getItem should return null if the exceptions are being swallowed', function () {
+            var fakeObj = {
+                ignoreExceptions: true,
+                maybeSwallowException: iLocalStorage.prototype.maybeSwallowException,
+                storage: {
+                    getItem: function () {
+                        throw new Error('test error');
+                    }
+                }
+            };
+            expect(iLocalStorage.prototype.getItem.call(fakeObj, 'foo'), 'to be null');
+        });
     });
 });
