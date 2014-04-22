@@ -1,6 +1,6 @@
 {
   "name": "ilocalstorage",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A generic localstorage wrapper that aims to abstract away any uncomfortable parts of localstorage.",
   "main": "lib/iLocalStorage.js",
   "scripts": {
