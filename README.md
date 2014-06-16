@@ -2,6 +2,7 @@
 
 [![NPM version](https://badge.fury.io/js/ilocalstorage.svg)](http://badge.fury.io/js/ilocalstorage)
 [![Build Status](https://travis-ci.org/gustavnikolaj/ilocalstorage.svg?branch=master)](https://travis-ci.org/gustavnikolaj/ilocalstorage)
+[![Dependency Status](https://david-dm.org/gustavnikolaj/ilocalstorage.png)](https://david-dm.org/gustavnikolaj/ilocalstorage)
 
 Provides an abstraction on top of the native localstorage
 implementations in the browsers. The goal is to handle the differences
