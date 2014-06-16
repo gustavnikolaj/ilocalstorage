@@ -1,5 +1,6 @@
 # iLocalStorage
 
+[![NPM version](https://badge.fury.io/js/ilocalstorage.svg)](http://badge.fury.io/js/ilocalstorage)
 [![Build Status](https://travis-ci.org/gustavnikolaj/ilocalstorage.svg?branch=master)](https://travis-ci.org/gustavnikolaj/ilocalstorage)
 
 Provides an abstraction on top of the native localstorage
